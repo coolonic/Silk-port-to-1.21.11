@@ -59,7 +59,8 @@ public final class ModuleManager {
                 new AntiMiss(), new WTap(), new STap(),
                 new AimAssist(), new AutoCrystal(), new SwordSwap(), new BreachSwap(),
                 new KeyAnchor(), new KeyLava(), new AutoPot(), new StunCob(),
-                new AutoCart(), new CrystalOptimizer(), new Criticals());
+                new AutoCart(), new CrystalOptimizer(), new Criticals(),
+                new LungeSwap());
         // Movement
         add(new Sprint(), new AutoFirework(), new AutoHeadHitter(), new KeepSprint());
 

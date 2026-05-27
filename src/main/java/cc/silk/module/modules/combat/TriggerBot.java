@@ -10,6 +10,7 @@ import cc.silk.module.setting.BooleanSetting;
 import cc.silk.module.setting.ModeSetting;
 import cc.silk.module.setting.RangeSetting;
 import cc.silk.utils.friend.FriendManager;
+import cc.silk.utils.keybinding.KeyUtils;
 import cc.silk.utils.math.MathUtils;
 import cc.silk.utils.math.TimerUtil;
 import cc.silk.utils.mc.CombatUtil;
@@ -46,6 +47,7 @@ public final class TriggerBot extends Module {
     public static final BooleanSetting onlyWhenMouseDown = new BooleanSetting("Only Mouse Hold", false);
     public static final BooleanSetting disableOnWorldChange = new BooleanSetting("Disable on Load", false);
     public static final BooleanSetting samePlayer = new BooleanSetting("Same Player", false);
+    public static final BooleanSetting sprintCrit = new BooleanSetting("Sprint Crit", true);
 
     private final TimerUtil timer = new TimerUtil();
     private final TimerUtil samePlayerTimer = new TimerUtil();
@@ -60,12 +62,16 @@ public final class TriggerBot extends Module {
     private Entity target;
     private String lastTargetUUID = null;
 
+    private boolean waitingForSprintDrop = false;
+    private int sprintDropTick = 0;
+
     public TriggerBot() {
         super("Trigger Bot", "Makes you automatically attack once aimed at a target", -1, Category.COMBAT);
         addSettings(
                 swordThreshold, axeThreshold,
                 axePostDelay, reactionTime,
-                cooldownMode, critMode, ignorePassiveMobs, ignoreCrystals, respectShields,
+                cooldownMode, critMode, sprintCrit,
+                ignorePassiveMobs, ignoreCrystals, respectShields,
                 ignoreInvisible, onlyWhenMouseDown, useOnlySwordOrAxe,
                 disableOnWorldChange, samePlayer);
     }
@@ -88,6 +94,16 @@ public final class TriggerBot extends Module {
             return;
 
         target = mc.targetedEntity;
+
+        if (waitingForSprintDrop) {
+            if (target == null || !hasTarget(target) || mc.player.isOnGround()) {
+                cancelSprintDrop();
+            } else {
+                handleSprintDrop();
+            }
+            return;
+        }
+
         if (target == null)
             return;
         if (!isHoldingSwordOrAxe())
@@ -140,9 +156,21 @@ public final class TriggerBot extends Module {
             if (critMode.getMode().equals("Strict")) {
                 if (!mc.player.isOnGround() && !mc.player.isClimbing()) {
                     if (canCrit() && mc.player.getAttackCooldownProgress(0.0f) >= swordThreshold.getMinValue()) {
-                        if (hasTarget(target) && samePlayerCheck(target)) {
-                            attack();
-                            waitingForReaction = false;
+                        if (!mc.player.isSprinting()) {
+                            if (hasTarget(target) && samePlayerCheck(target)) {
+                                attack();
+                                waitingForReaction = false;
+                            }
+                        } else if (sprintCrit.getValue() && KeyUtils.isKeyPressed(GLFW.GLFW_KEY_W)) {
+                            mc.options.forwardKey.setPressed(false);
+                            mc.player.setSprinting(false);
+                            waitingForSprintDrop = true;
+                            sprintDropTick = 0;
+                        } else {
+                            if (hasTarget(target) && samePlayerCheck(target)) {
+                                attack();
+                                waitingForReaction = false;
+                            }
                         }
                     }
                 } else {
@@ -158,6 +186,30 @@ public final class TriggerBot extends Module {
                 }
             }
         }
+    }
+
+    private void handleSprintDrop() {
+        sprintDropTick++;
+        if (!mc.player.isSprinting() || sprintDropTick >= 3) {
+            if (hasTarget(target) && samePlayerCheck(target)) {
+                attack();
+            }
+            waitingForReaction = false;
+            waitingForSprintDrop = false;
+            sprintDropTick = 0;
+            if (KeyUtils.isKeyPressed(GLFW.GLFW_KEY_W)) {
+                mc.options.forwardKey.setPressed(true);
+            }
+        }
+    }
+
+    private void cancelSprintDrop() {
+        if (!isNull() && KeyUtils.isKeyPressed(GLFW.GLFW_KEY_W)) {
+            mc.options.forwardKey.setPressed(true);
+        }
+        waitingForSprintDrop = false;
+        sprintDropTick = 0;
+        waitingForReaction = false;
     }
 
     private boolean samePlayerCheck(Entity entity) {
@@ -301,6 +353,8 @@ public final class TriggerBot extends Module {
         timerReactionTime.reset();
         waitingForReaction = false;
         waitingForDelay = false;
+        waitingForSprintDrop = false;
+        sprintDropTick = 0;
         super.onEnable();
     }
 
@@ -310,6 +364,9 @@ public final class TriggerBot extends Module {
         timerReactionTime.reset();
         waitingForReaction = false;
         waitingForDelay = false;
+        if (waitingForSprintDrop) cancelSprintDrop();
+        waitingForSprintDrop = false;
+        sprintDropTick = 0;
         super.onDisable();
     }
 }

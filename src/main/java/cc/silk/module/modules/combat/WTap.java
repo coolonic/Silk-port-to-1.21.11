@@ -1,7 +1,5 @@
 package cc.silk.module.modules.combat;
 
-
-import cc.silk.event.impl.player.AttackEvent;
 import cc.silk.event.impl.player.DoAttackEvent;
 import cc.silk.event.impl.player.TickEvent;
 import cc.silk.module.Category;
@@ -17,6 +15,7 @@ public class WTap extends Module {
     public static final NumberSetting chance = new NumberSetting("Chance (%)", 1, 100, 100, 1);
     private final NumberSetting msDelay = new NumberSetting("Ms", 1, 500, 60, 1);
     private final BooleanSetting onlyOnGround = new BooleanSetting("Only on ground", true);
+
     boolean wasSprinting;
     TimerUtil timer = new TimerUtil();
 
@@ -34,23 +33,41 @@ public class WTap extends Module {
         if (target == null) return;
         if (!target.isAlive()) return;
         if (!KeyUtils.isKeyPressed(GLFW.GLFW_KEY_W)) return;
-        if (mc.player.isSprinting()) {
+
+        if (mc.player.isSprinting() || mc.options.forwardKey.isPressed()) {
             wasSprinting = true;
+            timer.reset();
             mc.options.forwardKey.setPressed(false);
+            mc.player.setSprinting(false);
         }
     }
-
 
     @EventHandler
     private void onTickEvent(TickEvent event) {
         if (isNull()) return;
-        if (!KeyUtils.isKeyPressed(GLFW.GLFW_KEY_W)) return;
+
+        if (!KeyUtils.isKeyPressed(GLFW.GLFW_KEY_W)) {
+            if (wasSprinting) {
+                mc.options.forwardKey.setPressed(false);
+                wasSprinting = false;
+            }
+            return;
+        }
 
         if (wasSprinting) {
-            if (timer.hasElapsedTime(msDelay.getValueInt(), true)) {
+            if (timer.hasElapsedTime(msDelay.getValueInt(), false)) {
                 mc.options.forwardKey.setPressed(true);
                 wasSprinting = false;
             }
         }
+    }
+
+    @Override
+    public void onDisable() {
+        if (wasSprinting && !isNull()) {
+            mc.options.forwardKey.setPressed(true);
+        }
+        wasSprinting = false;
+        super.onDisable();
     }
 }

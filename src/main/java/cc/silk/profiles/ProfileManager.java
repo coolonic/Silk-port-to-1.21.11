@@ -104,7 +104,17 @@ public final class ProfileManager {
                     String mode = element.getAsString();
                     if (mode != null) modeSetting.setMode(mode);
                 }
-                case KeybindSetting keybindSetting -> keybindSetting.setKeyCode(element.getAsInt());
+                case KeybindSetting keybindSetting -> {
+                    if (element.isJsonObject()) {
+                        JsonObject keybindObj = element.getAsJsonObject();
+                        if (keybindObj.has("key"))
+                            keybindSetting.setKeyCode(keybindObj.get("key").getAsInt());
+                        if (keybindObj.has("holdMode"))
+                            keybindSetting.setHoldMode(keybindObj.get("holdMode").getAsBoolean());
+                    } else {
+                        keybindSetting.setKeyCode(element.getAsInt());
+                    }
+                }
                 case StringSetting stringSetting -> stringSetting.setValue(element.getAsString());
                 case ColorSetting colorSetting -> {
                     if (element.isJsonPrimitive()) {
@@ -212,7 +222,12 @@ public final class ProfileManager {
                     String mode = modeSetting.getMode();
                     if (mode != null) moduleJson.addProperty(name, mode);
                 }
-                case KeybindSetting keybindSetting -> moduleJson.addProperty(name, keybindSetting.getKeyCode());
+                case KeybindSetting keybindSetting -> {
+                    JsonObject keybindObj = new JsonObject();
+                    keybindObj.addProperty("key",      keybindSetting.getKeyCode());
+                    keybindObj.addProperty("holdMode", keybindSetting.isHoldMode());
+                    moduleJson.add(name, keybindObj);
+                }
                 case StringSetting stringSetting -> moduleJson.addProperty(name, stringSetting.getValue());
                 case ColorSetting colorSetting -> {
                     String hex = String.format("#%02X%02X%02X", colorSetting.getRed(), colorSetting.getGreen(), colorSetting.getBlue());
