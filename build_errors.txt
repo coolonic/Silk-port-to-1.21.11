@@ -1,0 +1,54 @@
+Initialized native services in: /home/aryan/.gradle/native
+Initialized jansi services in: /home/aryan/.gradle/native
+The client will now receive all logging from the daemon (pid: 28588). The daemon log file: /home/aryan/.gradle/daemon/9.2.1/daemon-28588.out.log
+Starting 3rd build in daemon [uptime: 3 mins 53.073 secs, performance: 98%, GC rate: 0.04/s, heap usage: 13% of 1 GiB]
+Using 12 worker leases.
+Operational build model parameters: {requiresToolingModels=false, parallelProjectExecution=true, configureOnDemand=false, configurationCache=false, configurationCacheParallelStore=false, configurationCacheParallelLoad=true, isolatedProjects=false, parallelProjectConfiguration=false, intermediateModelCache=false, parallelToolingApiActions=true, invalidateCoupledProjects=false, modelAsProjectDependency=false, resilientModelBuilding=false}
+Now considering [/home/aryan/Silkcc] as hierarchies to watch
+Watching the file system is configured to be enabled if available
+File system watching is active
+Starting Build
+Settings evaluated using settings file '/home/aryan/Silkcc/settings.gradle'.
+Projects loaded. Root project using build file '/home/aryan/Silkcc/build.gradle'.
+Included projects: [root project 'Silkcc']
+
+> Configure project :
+Evaluating root project 'Silkcc' using build file '/home/aryan/Silkcc/build.gradle'.
+Resolved plugin [id: 'fabric-loom', version: '1.14.10']
+Resolved plugin [id: 'maven-publish']
+Fabric Loom: 1.14.10
+(kotlin.metadata.jvm.KotlinClassMetadata) with version (2.2.20-release-333) was loaded from (/home/aryan/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-metadata-jvm/2.2.20/1f04dd6a9950a57b90ab8fa536337ba76dee4f59/kotlin-metadata-jvm-2.2.20.jar)
+(org.objectweb.asm.ClassVisitor) with version (9.9) was loaded from (/home/aryan/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm/9.9/c29635c8a7afa03d74b33c1884df8abb2b3f3dcc/asm-9.9.jar)
+(org.objectweb.asm.tree.analysis.Analyzer) with version (9.9) was loaded from (/home/aryan/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-analysis/9.9/bf4fa6e66638851c1cd22c2caea0c3ee5d5f437/asm-analysis-9.9.jar)
+(org.objectweb.asm.commons.ClassRemapper) with version (9.9) was loaded from (/home/aryan/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-commons/9.9/db9165a3bf908ded6b08612d583a15d1d0c7bda0/asm-commons-9.9.jar)
+(org.objectweb.asm.tree.ClassNode) with version (9.9) was loaded from (/home/aryan/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-tree/9.9/f8de6eead6d24dd0f45bd065bbe112b2cda6ea21/asm-tree-9.9.jar)
+(org.objectweb.asm.util.ASMifier) with version (9.9) was loaded from (/home/aryan/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-util/9.9/42fdfc0508b43807c8078d6e82ecff2ce2112ae8/asm-util-9.9.jar)
+(com.google.gson.Gson) with version (null) was loaded from (/home/aryan/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.10.1/b3add478d4382b78ea20b1671390a858002feb6c/gson-2.10.1.jar)
+Using cached Minecraft jars
+:Extracting server jar from bootstrap
+Mod dependency options: {"__inlineRefmap__":false,"__mappings__":"net.fabricmc.yarn.1_21_11.1.21.11+build.3-v2"}
+Applying installer data from /home/aryan/.gradle/caches/modules-2/files-2.1/net.fabricmc/fabric-loader/0.16.9/7eaa23079ac1569963e488054db124c7eb984f05/fabric-loader-0.16.9.jar
+Found another installer JSON in (/home/aryan/.gradle/caches/modules-2/files-2.1/net.fabricmc/fabric-loader/0.16.9/7eaa23079ac1569963e488054db124c7eb984f05/fabric-loader-0.16.9.jar), ignoring
+All projects evaluated.
+Task name matched 'build'
+Selected primary task 'build' from project :
+Tasks to be executed: [task ':compileJava', task ':processResources', task ':classes', task ':jar', task ':processIncludeJars', task ':remapJar', task ':sourcesJar', task ':remapSourcesJar', task ':assemble', task ':compileTestJava', task ':processTestResources', task ':testClasses', task ':test', task ':validateAccessWidener', task ':check', task ':build']
+Tasks that were excluded: []
+Resolve mutations for :compileJava (Thread[#10857,Execution worker,5,main]) started.
+:compileJava (Thread[#10857,Execution worker,5,main]) started.
+
+> Task :compileJava
+Caching disabled for task ':compileJava' because:
+  Build cache is disabled
+Task ':compileJava' is not up-to-date because:
+  Task has failed previously.
+The input changes require a full rebuild for incremental task ':compileJava'.
+Compilation mode: in-process compilation
+Full recompilation is required because no incremental change information is available. This is usually caused by clean builds or changing compiler arguments.
+Compiling with toolchain '/usr/lib/jvm/java-21-openjdk'.
+Compiling with JDK Java compiler API.
+
+> Task :compileJava FAILED
+
+[Incubating] Problems report is available at: file:///home/aryan/Silkcc/build/reports/problems/problems-report.html
+1 actionable task: 1 executed

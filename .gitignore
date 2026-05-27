@@ -1,0 +1,22 @@
+# Gradle
+.gradle/
+build/
+bin/
+out/
+.gradle/
+
+# IDE files
+.idea/
+*.iml
+.DS_Store
+
+# Run/Log/Temp
+run/
+logs/
+crash-reports/
+
+# Java/Classes
+*.class
+*.jar
+*.war
+*.ear
