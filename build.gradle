@@ -1,0 +1,74 @@
+plugins {
+    id 'fabric-loom' version '1.14.10'   // ← Match loom_version above
+    id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+repositories {
+    maven {
+        name = "meteor-maven"
+        url = "https://maven.meteordev.org/releases"
+    }
+    mavenCentral()
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    // ↑ Remove the `include` for Lombok — it's an annotation processor,
+    //   it must NOT be bundled into your mod JAR
+
+    implementation("meteordevelopment:orbit:${project.orbit_version}")
+    include("meteordevelopment:orbit:${project.orbit_version}")
+    implementation("io.github.racoondog:norbit:${project.norbit_version}")
+    include("io.github.racoondog:norbit:${project.norbit_version}")
+
+    implementation(platform("org.lwjgl:lwjgl-bom:3.3.3"))
+    implementation("org.lwjgl:lwjgl-nanovg:3.3.3")
+    include("org.lwjgl:lwjgl-nanovg:3.3.3")
+
+    // Native libraries — required so liblwjgl_nanovg.so/.dll/.dylib can be
+    // found at runtime. Minecraft bundles most LWJGL natives but NOT nanovg.
+    include("org.lwjgl:lwjgl-nanovg:3.3.3:natives-linux")
+    include("org.lwjgl:lwjgl-nanovg:3.3.3:natives-linux-arm64")
+    include("org.lwjgl:lwjgl-nanovg:3.3.3:natives-windows")
+    include("org.lwjgl:lwjgl-nanovg:3.3.3:natives-windows-arm64")
+    include("org.lwjgl:lwjgl-nanovg:3.3.3:natives-macos")
+    include("org.lwjgl:lwjgl-nanovg:3.3.3:natives-macos-arm64")
+}
+
+processResources {
+    inputs.property "version", project.version
+    filteringCharset "UTF-8"
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+loom {
+    mixin {
+        useLegacyMixinAp = true
+        add sourceSets.main, "silk.refmap.json"
+    }
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+}
